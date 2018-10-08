@@ -65,27 +65,27 @@ class Results extends React.Component {
     loading: true
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { playerOneName, playerTwoName } = queryString.parse(
       this.props.location.search
     )
-    battle([playerOneName, playerTwoName]).then(results => {
-      if (results === null) {
-        console.log('Error!!')
-        return this.setState(() => ({
-          error:
-            'Looks like there was error. Check that both users exist on Github',
-          loading: false
-        }))
-      }
 
-      this.setState(() => ({
-        error: null,
-        winner: results[0],
-        loser: results[1],
+    const players = await battle([playerOneName, playerTwoName])
+    if (players === null) {
+      console.log('Error!!')
+      return this.setState(() => ({
+        error:
+          'Looks like there was error. Check that both users exist on Github',
         loading: false
       }))
-    })
+    }
+
+    this.setState(() => ({
+      error: null,
+      winner: players[0],
+      loser: players[1],
+      loading: false
+    }))
   }
 
   render() {
